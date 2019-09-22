@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            text-align: center;
+        }
+
+        .form-register {
+            width: 100%;
+            max-width: 330px;
+            padding: 15px;
+            margin: auto;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://bootswatch.com/_vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <title>新規登録の選択</title>
+</head>
+
+<body>
+    <div class="container">
+        <form class="form-register card card-body">
+            <h3>新規登録</h3>
+            <button type="button" class="btn btn-warning btn-block"
+                style="margin-bottom: 1rem!important;" onclick="location.href='./registration_parent'">保護者</button>
+            <button type="button" class="btn btn-info btn-block"
+                style="margin-bottom: 1rem!important;" onclick="location.href='./registration_safehouse'">こどもをまもるいえ</button>
+                <button type="button" class="btn btn-secondary btn-block" onclick="location.href='./'">戻る</button>
+        </form>
+    </div>
+</body>
+
+</html>

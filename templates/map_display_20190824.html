@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>地図表示</title>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css">
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    
+    <script src="../static/map_display/jquery-3.3.1.min.js"></script>
+    <!--ポップアップのcss-->
+    <link rel="stylesheet" href="../static/map_display/map_display.css">
+
+    <style>
+        #return_button{
+            margin-top: 5vh;
+            /* margin-right: -30px; */
+        }
+
+        #wrap_contents{
+            margin-top: 5vh;
+            margin-bottom: 5vh;
+        }
+
+        #map{
+            width: auto;
+            height: 70vh;
+        }
+        
+        #button{
+            margin-top: 2vh;
+        }
+
+        @media screen and (max-width:576px){
+            #return_button{
+                margin-top: 5vh;
+                /* margin-left: -20px; */
+                /* margin-right: -20px; */
+            }
+
+            #wrap_contents{
+                margin-top: 5vh;
+                margin-bottom: 5vh;
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            #map{
+                width: auto;
+                height: 50vh;
+            }
+
+            #button{
+                margin-top: 5vh;
+            }
+        }
+
+        /* body {
+            font-family: "Helvetica Neue", Helvetica, Arial, "游ゴシック体", "Yu Gothic", YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, 'Open Sans', sans-serif;
+        } */
+
+    </style>
+
+</head>
+
+<body>
+    <header></header>
+    <div class="container">
+        <div class="row pull-right" id="return_button">
+            <div class="col-sm-4" id="user_display">
+                <p>ログイン中のユーザー：<br>{{ name }}さん</p>
+            </div>
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-secondary btn-block" onclick="location.href='./logout'">ログアウト</button>
+            </div>
+        </div>
+
+        <div id="wrap_contents">
+            <div class="row rounded border border-secondary" id="map"></div>
+            <div class="row" id="button">
+                <button type="button" class="btn btn-danger btn-outline-danger col-sm-4 active" data-toggle="button" aria-pressed="true" autocomplete="off" onclick="occur_appear();">不審者出没地点</button>
+                <button type="button" class="btn btn-success btn-outline-success col-sm-4 active" data-toggle="button" aria-pressed="true" autocomplete="off" onclick="safeguard_appear();">こどもをまもるいえ</button>
+                <button type="button" class="btn btn-warning btn-outline-warning col-sm-4 active" data-toggle="button" aria-pressed="true" autocomplete="off" onclick="danger_appear();">危険エリア</button>
+            </div>
+        </div>
+    </div>
+
+    <form action="/add_occur_data" method="post">
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal1" id="btn1" style="visibility: hidden;"></button>
+
+    <div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="label1" aria-hidden="true" data-backdrop="static" style="padding-right: 0!important;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="label1">不審者出没地点 / 事案編集</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close_to">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="padding-right:5%!important; padding-left:5%!important;">
+                    <div class="modalMain" id="modaltext"></div>
+                         <div class="row" style="margin-top: 10px;">
+                                <div class="btn-group col-xs-12 col-md-6 col-sm-6" role="group" style="margin: 5px 0;">
+                                    <button type="button" class="btn btn-outline-primary btn-primary rounded-pill btn-block" name="case" value="声かけ" style="border-radius: 10px;" data-toggle="button" aria-pressed="true" autocomplete="off">声かけ</button>
+                                </div>
+                                <div class="btn-group col-xs-12 col-md-6 col-sm-6" role="group" style="margin: 5px 0;">
+                                    <button type="button" class="btn btn-outline-primary btn-primary rounded-pill btn-block" name="case" value="つきまとい" style="border-radius: 10px;" data-toggle="button" aria-pressed="true" autocomplete="off">つきまとい</button>        
+                                </div>
+                                <div class="btn-group col-xs-12 col-md-6 col-sm-6" role="group" style="margin: 5px 0;">
+                                    <button type="button" class="btn btn-outline-primary btn-primary rounded-pill btn-block" name="case" value="車両誘い込み" style="border-radius: 10px;" data-toggle="button" aria-pressed="true" autocomplete="off">車両誘い込み</button>
+                                </div>
+                                <div class="btn-group col-xs-12 col-md-6 col-sm-6" role="group" style="margin: 5px 0;">
+                                    <button type="button" class="btn btn-outline-primary btn-primary rounded-pill btn-block" name="case" value="連れ去り" style="border-radius: 10px;" data-toggle="button" aria-pressed="true" autocomplete="off">連れ去り</button>        
+                                </div>
+                                <div class="btn-group col-xs-12 col-md-6 col-sm-6" role="group" style="margin: 5px 0;">
+                                    <button type="button" class="btn btn-outline-primary btn-primary rounded-pill btn-block" name="case" value="痴漢" style="border-radius: 10px;" data-toggle="button" aria-pressed="true" autocomplete="off">痴漢</button>
+                                </div>
+                                <div class="btn-group col-xs-12 col-md-6 col-sm-6" role="group" style="margin: 5px 0;">
+                                    <button type="button" class="btn btn-outline-primary btn-primary rounded-pill btn-block" name="case" value="露出" style="border-radius: 10px;" data-toggle="button" aria-pressed="true" autocomplete="off">露出</button>        
+                                </div>
+                        </div>
+                </div>
+                <div class="modal-footer" style="padding-right:5%!important; padding-left:5%!important;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+                    <button type="submit" class="btn btn-success" data-dismiss="modal" onclick="submit_clicked(); location.href='/map'">　 送信 　</button>
+                    <!-- /add_occur_data -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </form>
+
+    <!-- 自作スクリプト -->
+    <script type="text/javascript" src="../static/map_display/map_display.js"></script>
+
+    
+    <script type="text/javascript">
+        window.onload = function(){
+            get_data({{data|tojson}});
+        }
+    </script> 
+   
+
+    <!-- 関連 JavaScript の読み込み-->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    <footer></footer>
+</body>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<head>
+</head>
+<body>
+    <h1>Wio 仮データ送信フォーム</h1>
+    <form action="/wio" method="post">
+        <p>緯度 lat：<input type="text" name="lat" size="40"></p>
+        <p>経度 lon：<input type="text" name="lon" size="40"></p>
+        <p>保護者ID　(P10000～)：<input type="text" name="parent_ID" size="40"></p>
+        <p>識別番号　(B10000～)：<input type="text" name="buzzer_num" size="40"></p>
+        <p>識別フラグ (0:定期通信 , 1:ボタン)：<input type="text" name="flag" size="40"></p>
+        <p>
+        <input type="submit" value="送信">
+        <input type="reset" value="リセット">
+        </p>
+    </form>
+</body>
+</html>

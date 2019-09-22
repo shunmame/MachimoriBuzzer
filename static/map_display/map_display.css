@@ -1,0 +1,126 @@
+/*
+div.leaflet-popup                 : ルートコンテナ
+a.leaflet-popup-close-button 	  : 右上にある閉じるボタン
+div.leaflet-popup-content-wrapper : ポップアップの本体
+div.leaflet-popup-content 	      : ポップアップの文字列のプレースホルダ
+div.leaflet-popup-tip-container   : ポップアップ下の三角形を保持するための領域
+div.leaflet-popup-tip 	          : ポップアップ下の三角形本体
+*/
+
+/****************************/
+/******不審者ポップアップ*****/
+/****************************/
+
+.occur_pop .leaflet-popup-content-wrapper,
+.occur_pop .leaflet-popup-tip{
+    /* background: black; */
+    border-color: #F06060;
+}
+
+.occur_pop .leaflet-popup-content,
+.occur_pop a.leaflet-popup-close-button {
+    color: black !important;
+    /* font: bold 8pt monospace; */
+    font: 12pt monospace;
+    font-family: "メイリオ";
+}
+
+.occur_pop .leaflet-popup-content-wrapper {
+    border-width: 2px;
+    border-style: solid;
+}
+
+.occur_pop .leaflet-popup-tip-container {
+    margin-top: -2px;
+    height: 23px;
+}
+
+.occur_pop .leaflet-popup-tip {
+    border-style: solid;
+    border-width: 0 3px 3px 0;
+}
+
+.occur_pop_title{
+    /* background: red; */
+    margin-top: -7px;
+    margin-bottom: 8px;
+    margin-left: -5px;
+    width: 105%;
+    color: #F06060;
+    font-weight: 900;
+    font-size: 18px;
+    border-bottom: solid 3px #F06060;
+    padding-bottom: 2px;
+    position: relative;
+}
+
+
+
+/*******************************/
+/******まもるいえポップアップ*****/
+/*******************************/
+
+.safeguard_pop .leaflet-popup-content-wrapper,
+.safeguard_pop .leaflet-popup-tip{
+    /* background: black; */
+    border-color: #28a745;
+}
+
+.safeguard_pop .leaflet-popup-content,
+.safeguard_pop a.leaflet-popup-close-button {
+    color: black !important;
+    /* font: bold 8pt monospace; */
+    font: 12pt monospace;
+    font-family: "メイリオ";
+}
+
+.safeguard_pop .leaflet-popup-content{
+    width: 200px;
+}
+
+.safeguard_pop .leaflet-popup-content-wrapper {
+    border-width: 2px;
+    border-style: solid;
+}
+
+.safeguard_pop .leaflet-popup-tip-container {
+    margin-top: -3px;
+    height: 23px;
+}
+
+.safeguard_pop .leaflet-popup-tip {
+    border-style: solid;
+    border-width: 0 3px 3px 0;
+}
+
+.safeguard_pop_title{
+    /* background: red; */
+    margin-top: -7px;
+    margin-bottom: 8px;
+    margin-left: -5px;
+    width: 105%;
+    color: #28a745;
+    font-weight: 900;
+    font-size: 18px;
+    border-bottom: solid 3px #28a745;
+}
+
+
+
+/* ポップアップの重なり順 */
+.leaflet-control-container{
+    z-index: 0;
+}
+
+.edit_mark{
+    width: 20px;
+    height: auto;
+    top: 2px;
+    right: 1vw;
+    position: absolute;
+}
+
+.img_tag{
+    text-align:center;
+    margin-top: 10px;
+}
