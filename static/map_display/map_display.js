@@ -21,10 +21,6 @@ var Map_BaseLayer = {
 
 var map; //  マップ用のタイル
 
-// var user_lat = 32.504405;  // ユーザー緯度
-// var user_lon = 130.604782; // ユーザー経度
-// var user_num = 10001;      // ユーザー番号
-
 var user_lat = 0;  // ユーザー緯度
 var user_lon = 0;  // ユーザー経度
 var user_num = 0;  // ユーザー番号
@@ -67,9 +63,6 @@ var edit_case;
 var edit_lat;
 var edit_lon;
 
-// var occur_pop_title = '<div class="occur_pop_title">不審者出没地点</div>';
-// var safeguard_pop_title = '<div class="safeguard_pop_title">こどもをまもるいえ</div>';
-
 var edit_mark = "<img src='../static/map_display/img/edit.png' class='edit_mark' onclick='img_click();'><label for='pop11'></label></img>";
 
 var edit_num_cnt = 0;
@@ -88,55 +81,6 @@ function submit_clicked(){
     //alert("回答を受け付けました");
     document.getElementsByClassName("leaflet-popup-close-button")[0].click();  // 強制的にクリック
 }
-
-/*
-var choice_fushin = {"声かけ","つきまとい","車両誘い込み","連れ去り","痴漢","露出"};
-var choice_num = [];
-
-function choice_clicked(){
-    if(choice_num[num-1] == 0){
-	choice_num[num-1] = 1;
-    }
-    else{
-	choice_num[num-1] = 0;
-    }
-    console.log(choice_num[num-1] + "hoge");
-}
-
-function hogehoge(){
-    alert("ちくわ");
-    console.log("大井お茶");
-}*/
-
-/*
-$.getJSON({ url: 'map_data.json', cache: false, }) // json読み込み開始
-    .done(function (data) { // jsonの読み込みに成功した時
-        console.log('成功');
-        len = data.length;
-        for (var i = 0; i < len; i++) {
-            if (data[i].kind == 0) {
-                occur_lat.push(data[i].lat);
-                occur_lon.push(data[i].lon);
-                occur_time.push(data[i].time);
-                occur_address.push(data[i].address);
-                occur_case.push(data[i].case);
-                buzzer_num.push(data[i].buzzer_num);
-            }
-            else{
-                safeguard_lat.push(data[i].lat);
-                safeguard_lon.push(data[i].lon);
-                safeguard_name.push(data[i].name);
-                safeguard_address.push(data[i].address);
-                safeguard_img.push(data[i].img);
-            }
-        }
-        data_load();
-        map_load();
-    })
-    .fail(function () { // jsonの読み込みに失敗した時
-        console.log('失敗');
-    }
-);*/
 
 
 function get_data(data){
@@ -234,12 +178,6 @@ function data_load(){
                     }
                 });
             }
-            // edit_time = occur_time[i];
-            // edit_address = occur_address[i];
-            // edit_case = occur_case[i];
-            
-            // edit_lat = occur_lat[i];
-            // edit_lon = occur_lon[i];
         }
         else{
             occur_info.push({
@@ -295,11 +233,6 @@ function occur_appear() {
                     if (feature.properties && feature.properties.popupContent) {
                         layer.bindPopup(feature.properties.occur_pop_title + feature.properties.popupContent, occur_popOpt);  // popupOptions : class名を振る
                     }
-                    // edit_time = feature.edit_now.edit_time;
-                    // edit_address = feature.edit_now.edit_address;
-                    // edit_case = feature.edit_now.edit_case;
-                    // edit_lat = feature.edit_now.edit_lat;
-                    // edit_lon = feature.edit_now.edit_lon;
                 },
                 // オリジナル画像を設定する
                 pointToLayer: function (feature, latlng) {
@@ -321,24 +254,13 @@ function occur_appear() {
                         }
                         edit_lat = feature.edit_now.edit_lat;
                         edit_lon = feature.edit_now.edit_lon;
-                        clickEvt(e);
                     });  // マーカーに画像情報を設定＆他もろもろ
                 }
             });
         occur_tile.addTo(map);
 
-        // occur_tile.lat = feature.edit_now.edit_lat;
-        // occur_tile.lon = feature.edit_now.edit_lon;
     }
 }
-
-function clickEvt(e){
-    // ここは確認用
-    // console.log("こんにちはあああああ");
-    // edit_address = 'くまモン県'
-    // console.log(e.target.lat);
-}
-
 
 // 不審者出没非表示
 function occur_disappear() {
