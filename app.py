@@ -54,7 +54,7 @@ def load_user(sp_ID):
     db = DB()
     sql = 'select parent_ID from parent where parent_ID=%s;'
     data = db.select(sql, (sp_ID,))
-    if data == []:
+    if not data:
         sql = 'select safeguard_ID from safeguard where safeguard_ID=%s;'
         data = db.select(sql, (sp_ID,))
     db.end_DB()
@@ -80,7 +80,7 @@ def login():
         sql = ('select parent_password from parent'
                ' where parent_ID=%s;')
         data = db.select(sql, (sp_ID,))
-        if data == []:  # parentではないときsafeguardのログイン
+        if not data:  # parentではないときsafeguardのログイン
             sql = ('select safeguard_password from safeguard'
                    ' where safeguard_ID=%s;')
             data = db.select(sql, (sp_ID,))
@@ -174,7 +174,7 @@ def registration_safehouse_data():
         addres2 = request.form['address']
 
         # safeguardの画像保存
-        img_path = 'NULL'
+        img_path = None
         if 'uploadfile' in request.files:
             imgfile = request.files['uploadfile']
             if imgfile and allowed_file(imgfile.filename):
@@ -220,7 +220,7 @@ def map():
     sql = ('select buzzer_num,parent_lat,parent_lon,parent_name'
            ' from parent where parent_ID=%s;')
     inuserdata = db.select(sql, (current_user.id,))
-    if inuserdata == []:  # parentではないときsafeguardの処理
+    if not inuserdata:  # parentではないときsafeguardの処理
         user_flag = 1
         sql = ('select safeguard_ID,safeguard_lat,safeguard_lon,safeguard_name'
                ' from safeguard where safeguard_ID=%s;')
@@ -243,7 +243,7 @@ def add_occur_data():
         # checkboxで編集された内容を取得
         casedata = request.form.getlist('case')
         latlon = request.form.getlist('latlon')
-        if casedata == []:
+        if not casedata:
             return redirect(url_for('map'))
         # 発生した事件の内容を変更
         db = DB()
@@ -318,7 +318,7 @@ def get_wio_data():
         data = (wio_lat, wio_lat, wio_lon, wio_lon,)
         area_data = db.select(sql, data)
         # 危険エリアに入っていたら
-        if area_data != []:
+        if area_data:
             for ac in area_data:
                 acon_dict = json.loads(ac[1])
                 for i in range(1, 6):
@@ -341,7 +341,7 @@ def get_wio_data():
         # 異常検知
         knn = KNN2d(buzzer_num)
         result = knn.main(wio_lat, wio_lon)
-        if result == 1:
+        if result:
             # メール送信
             mail.ab_send_mail(pdata, nowtime, occur_address)
 
@@ -353,7 +353,7 @@ def get_wio_data():
         return str(area_flag)
 
     # ボタンが押された用
-    elif flag == 1:
+    elif flag:
         # 事件をoccurに保存
         sql = ('insert into occur(occur_ID,parent_ID,buzzer_num,occur_lat,'
                'occur_lon,occur_time,occur_address)'
@@ -379,7 +379,7 @@ def get_wio_data():
         cd = CalcDistance(sdata)
         # 発生地点から500m以内にある家のリストを取得し、送信
         s_namail_list = cd.cal_rho(wio_lat, wio_lon)
-        if s_namail_list != []:
+        if s_namail_list:
             mail.sbz_send_mail(s_namail_list, nowtime, occur_address)
         # 対角の座標取得(発生地点を中心)
         edge_ab = great_circle(distance=100*math.sqrt(2),

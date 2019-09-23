@@ -39,7 +39,7 @@ class KNN2d:
         l_li = np.sort(l_li)
         return l_li[k]
 
-    def __abnormal_decision(self, abnormal, treshold):
-        if abnormal > treshold:
+    def __abnormal_decision(self, abnormal, threshold):
+        if abnormal > threshold:
             return 1  # 異常
         return 0      # 正常
