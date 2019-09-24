@@ -134,8 +134,8 @@ def registration_parent_data():
         if school_latlon is None:
             school_lat = lat
             school_lon = lon
-        school_lat = school_latlon[0]
-        school_lon = school_latlon[1]
+        school_lat = school_latlon.latlng[0]
+        school_lon = school_latlon.latlng[1]
 
         db = DB()
         # parent_ID作成用に現在の登録者数取得
