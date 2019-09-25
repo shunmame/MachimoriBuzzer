@@ -45,6 +45,8 @@ class My_Json():
             plot_dict['case'] = olis[8]
             plot_dict['buzzer_num'] = olis[2]
             plot_dict['address'] = olis[6]
+            plot_dict['gender'] = olis[9]
+            plot_dict['age'] = olis[10]
             plot_list.append(plot_dict)
 
         for slis in sdata:
