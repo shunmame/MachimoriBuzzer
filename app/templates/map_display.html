@@ -273,21 +273,20 @@
                         <br>
                         <div class="container" data-toggle="buttons">
                             <div class="row">
-                                <p>不審者の性別</p>
+                                <div class="col-xl-4 p-1" style="padding-left:0;">不審者の性別</div>
                                 <div class="col-xl-4 p-1">
                                     <label class="btn btn-block btn-outline-primary btn-primary">
                                         <input type="radio" autocomplete="off" name="gender" value="男性"> 男性
                                     </label>
                                 </div>
                                 <div class="col-xl-4 p-1">
-                                    <label class="btn btn-block btn-outline-primary btn-primary">
+                                    <label class="btn btn-block btn-outline-danger btn-danger">
                                         <input type="radio" autocomplete="off" name="gender" value="女性"> 女性
                                     </label>
                                 </div>
-                                <p>不審者の年齢層</p>
-                                <select class="mdb-select md-form" name="age">
-                                    <option value="" disabled selected>不審者の年齢層</option>
-                                    <option value="0代">0代</option>
+                                <div class="col-4 p-1">不審者の年齢層</div>
+                                <select class="col-8 mdb-select md-form p-1" name="age">
+                                    <option value="" disabled selected></option>
                                     <option value="10代">10代</option>
                                     <option value="20代">20代</option>
                                     <option value="30代">30代</option>
@@ -295,11 +294,11 @@
                                     <option value="50代">50代</option>
                                     <option value="60代">60代</option>
                                     <option value="70代">70代</option>
-                                    <option value="80代">80代</option>
-                                    <option value="90代">90代</option>
-                                    <option value="100代">100代</option>
+                                    <option value="80代">80代以上</option>
                                 </select>
-                                <p>被害内容</p>
+                                <div class="col-12">　</div>
+
+                                <div class="col-12 p-1">被害内容</div>
                                 <div class="col-xl-4 p-1">
                                     <label class="btn btn-block btn-outline-primary btn-primary">
                                         <input type="checkbox" autocomplete="off" name="case" value="声かけ"> 声かけ
