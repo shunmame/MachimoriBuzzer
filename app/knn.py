@@ -14,8 +14,8 @@ class KNN2d:
         regular_data = db.select(sql, (buzzer_num,))
 
         # データをself.リストに格納
-        self.lon_list = [i[1] for i in regular_data]
-        self.lat_list = [i[0] for i in regular_data]
+        self.lon_list = np.array([i[1] for i in regular_data])
+        self.lat_list = np.array([i[0] for i in regular_data])
 
     # wioのデータを受け取り異常検知
     def main(self, lat, lon):
