@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css">
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
-    
+
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -19,26 +19,30 @@
     <!-- <link rel="stylesheet" href="../static/map_display/map_display.css"> -->
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='/map_display/map_display.css')}}">
     <!--Loading Google web font-->
-    <link href="https://fonts.googleapis.com/css?family=Kosugi+Maru|Noto+Sans+JP&display=swap" rel="stylesheet">    
-  
+    <link href="https://fonts.googleapis.com/css?family=Kosugi+Maru|Noto+Sans+JP&display=swap" rel="stylesheet">
+
     <style>
-        html,body{
+        html,
+        body {
             overflow: auto;
             min-height: 100%;
 
             margin: 0;
             padding: 0;
-            height: 100%; /* needed for container min-height */
+            height: 100%;
+            /* needed for container min-height */
             font-family: 'Noto Sans JP', sans-serif;
         }
-        body{
+
+        body {
             min-height: 100%;
             margin: 0 auto;
             overflow: hidden;
             position: relative;
             width: 100%;
             height: auto !important;
-            height: 100%; /* IE6: treaded as min-height*/
+            height: 100%;
+            /* IE6: treaded as min-height*/
 
             min-height: 100vh;
             position: relative;
@@ -47,23 +51,29 @@
 
             background: url(../static/map_display/img/pattern_devices.png);
         }
-        header{
+
+        header {
             height: 72px;
             position: relative;
             background: #f12711;
             background: -webkit-linear-gradient(to right, #f5af19, #f12711);
             background: linear-gradient(to right, #f5af19, #f12711);
+            /* pink: #F8ABA6, deep-pink: #FF1493; */
+
             margin-left: -4vw;
         }
-        .content{
+
+        .content {
             position: absolute;
             top: 0;
             bottom: 0;
             overflow: auto;
-            margin-top: 132px;   /* header's height */
+            margin-top: 132px;
+            /* header's height */
             width: 100%;
         }
-        footer{
+
+        footer {
             position: absolute;
             clear: both;
             width: 100%;
@@ -72,14 +82,16 @@
             background: #EF8020;
             color: white;
         }
-        .header-logo{
+
+        .header-logo {
             color: #fff;
-            text-shadow:rgba(0,0,0,1.0) 2px 2px 4px;
+            text-shadow: rgba(0, 0, 0, 1.0) 2px 2px 4px;
             border-bottom: solid 3px#fcc753;
             position: relative;
             font-family: 'Kosugi Maru', sans-serif;
         }
-        .header-logo:after{
+
+        .header-logo:after {
             position: absolute;
             content: " ";
             display: block;
@@ -87,17 +99,24 @@
             bottom: -3px;
             width: 25%;
         }
-        .work{
+
+        .work {
             padding-top: 0.5vh;
             font-family: 'Kosugi Maru', sans-serif;
             margin-left: -3vw;
         }
-        .creator{
+
+        .creator {
             text-align: right;
             margin-right: -2vw;
         }
 
-        #status{
+        /* #return_button {
+            margin-top: 5vh;
+            /* margin-right: -30px;
+        } */
+
+        #status {
             margin-top: 2vh;
             margin-right: 0;
         }
@@ -118,17 +137,23 @@
             width: auto;
         }
 
-        .username{
+        .username {
             padding-top: 1vh;
         }
 
         @media screen and (max-width:576px) {
-            .header-logo{
+            .header-logo {
                 margin-top: 5px;
                 margin-left: 5px;
             }
 
-            #status{
+            /* #return_button {
+                margin-top: 5vh;
+                /* margin-left: -20px;
+                /* margin-right: -20px;
+            } */
+
+            #status {
                 margin-top: 2vh;
                 margin-left: -20px;
                 margin-right: -20px;
@@ -153,25 +178,34 @@
                 margin-bottom: 2vh;
             }
 
-            .work{
+            .work {
                 float: none;
             }
-            
-            .creator{
+
+            .creator {
                 text-align: 0;
                 font-size: 12px;
                 margin-right: 4px;
             }
 
-            .container{
+            .container {
                 padding-bottom: 2vh;
+            }
+
+            .mdb-select{
+                width: 100%;
+                margin-bottom: 16px;
             }
         }
 
-        input[type=checkbox]{
-            display:none;
+        input[type=checkbox] {
+            display: none;
+        }
+        input[type=radio] {
+            display: none;
         }
 
+        
     </style>
 
 </head>
@@ -181,20 +215,30 @@
         <div class="container">
             <div class="row pull-left">
                 <div class="col-sm-12">
-                    <div class="header-logo"><h1>まちもりマップ</h1></div>
+                    <div class="header-logo">
+                        <h1>まちもりマップ</h1>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
-    
+
     <div class="container">
         <div class="row pull-right" id="status">
-            <div class="col-sm-4"><h5 class="username">ログイン中: {{ name }} さん</h5></div>
+            <div class="col-sm-4">
+                <h5 class="username">ログイン中: {{ name }} さん</h5>
+            </div>
             <div class="col-sm-8">
-                <p style="text-align: right;"><img src="{{ url_for('static',filename='/map_display/img/LogOut_button_background.jpg')}}" alt="ログアウトボタン" title="ログアウト" style="height: 38px" onclick="location.href='../logout'">ログアウトはこちら</p>
+                <p style="text-align: right;"><img
+                        src="{{ url_for('static',filename='/map_display/img/LogOut_button_background.jpg')}}"
+                        alt="ログアウトボタン" title="ログアウト" style="height: 38px" onclick="location.href='../logout'">ログアウトはこちら
+                </p>
             </div>
         </div>
-
+        {% if error_text %}
+        <p style="color: red;">{{ error_text }}</p>
+        {% endif%}
+        <p></p>
         <div id="wrap_contents">
             <div class="row rounded border border-secondary" id="map"></div>
             <div class="row" id="button">
@@ -227,13 +271,38 @@
 
                     <form action="/add_occur_data" method="post">
                         <br>
-
                         <div class="container" data-toggle="buttons">
                             <div class="row">
+                                <p>不審者の性別</p>
                                 <div class="col-xl-4 p-1">
                                     <label class="btn btn-block btn-outline-primary btn-primary">
-                                        <input type="checkbox" autocomplete="off" name="case" value="声かけ">
-                                        声かけ
+                                        <input type="radio" autocomplete="off" name="gender" value="男性"> 男性
+                                    </label>
+                                </div>
+                                <div class="col-xl-4 p-1">
+                                    <label class="btn btn-block btn-outline-primary btn-primary">
+                                        <input type="radio" autocomplete="off" name="gender" value="女性"> 女性
+                                    </label>
+                                </div>
+                                <p>不審者の年齢層</p>
+                                <select class="mdb-select md-form" name="age">
+                                    <option value="" disabled selected>不審者の年齢層</option>
+                                    <option value="0代">0代</option>
+                                    <option value="10代">10代</option>
+                                    <option value="20代">20代</option>
+                                    <option value="30代">30代</option>
+                                    <option value="40代">40代</option>
+                                    <option value="50代">50代</option>
+                                    <option value="60代">60代</option>
+                                    <option value="70代">70代</option>
+                                    <option value="80代">80代</option>
+                                    <option value="90代">90代</option>
+                                    <option value="100代">100代</option>
+                                </select>
+                                <p>被害内容</p>
+                                <div class="col-xl-4 p-1">
+                                    <label class="btn btn-block btn-outline-primary btn-primary">
+                                        <input type="checkbox" autocomplete="off" name="case" value="声かけ"> 声かけ
                                     </label>
                                 </div>
                                 <div class="col-xl-4 p-1">
@@ -263,28 +332,26 @@
                                     </label>
                                 </div>
 
-                                <!--非表示-->                          
+                                <!--非表示-->
                                 <div class="col-xl-4 p-1" style="display:none;">
                                     <label class="btn btn-block btn-outline-primary btn-primary">
-                                        <input type="checkbox" id="display_lat" autocomplete="off" name="latlon" checked="checked">
+                                        <input type="checkbox" id="display_lat" autocomplete="off" name="latlon"
+                                            checked="checked">
                                     </label>
                                 </div>
                                 <div class="col-xl-4 p-1" style="display:none;">
                                     <label class="btn btn-block btn-outline-primary btn-primary">
-                                        <input type="checkbox" id="display_lon" autocomplete="off" name="latlon" checked="checked">
+                                        <input type="checkbox" id="display_lon" autocomplete="off" name="latlon"
+                                            checked="checked">
                                     </label>
                                 </div>
                             </div>
                         </div>
-
                         <br>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
                         <button type="submit" class="btn btn-success">送信する</button>
                     </form>
-
-
                 </div>
-
                 <div class="modal-footer" style="padding-right:5%!important; padding-left:5%!important;">
                 </div>
             </div>
@@ -317,16 +384,20 @@
 
     <footer>
         <div class="container">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="work"><h5>まちもりブザー</h5></div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="work">
+                        <h5>まちもりブザー</h5>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="row pull-right">
-            <div class="col-sm-12">
-                <div class="creator"><p>熊本高等専門学校 八代キャンパス - 情報システム研究部</p></div>
+            <div class="row pull-right">
+                <div class="col-sm-12">
+                    <div class="creator">
+                        <p>熊本高等専門学校 八代キャンパス - 情報システム研究部</p>
+                    </div>
+                </div>
             </div>
-        </div>
         </div>
     </footer>
 </body>
