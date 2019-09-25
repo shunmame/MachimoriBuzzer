@@ -7,10 +7,10 @@ http://machimori.japanwest.cloudapp.azure.com
 まちもりブザーのソースコード
 
 - app  
-サーバーにて動いているコード
+サーバーで動いているコード
 
 - wio  
-wioにて動いているコード
+wioで動いているコード
 
 ### ファイル構成  
 ```
