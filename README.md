@@ -37,5 +37,5 @@ app/
                        ├ *.png        ・ こどもをまもるいえの画像
 
 wio/
- ├ wio_main.ino      ・ wioで動いているファイル
+ ├ wio_main.ino        ・ wioで動いているファイル
 ```
