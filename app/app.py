@@ -134,6 +134,7 @@ def registration_parent_data():
         if school_latlon is None:
             school_lat = lat
             school_lon = lon
+        print(school_latlon)
         school_lat = school_latlon.latlng[0]
         school_lon = school_latlon.latlng[1]
 
@@ -231,25 +232,40 @@ def map():
                                     1, safeguarddata,
                                     inuserdata, user_flag)
     db.end_DB()
-    # マップ表示
-    return render_template('map_display.html',
+    error_text = None
+    try:
+        is_error = request.args.get('is_error')
+        if int(is_error):
+            error_text = "すべての項目を入力してください"
+        # マップ表示
+        return render_template('map_display.html',
+                           data=data,
+                           name=inuserdata[0][3],
+                           error_text = error_text)
+    except:
+        return render_template('map_display.html',
                            data=data,
                            name=inuserdata[0][3])
+
 
 # 発生事件の編集
 @app.route('/add_occur_data', methods=['POST'])
 def add_occur_data():
     if request.method == 'POST':
         # checkboxで編集された内容を取得
+        gender = request.form.getlist('gender')
+        age = request.form.getlist('age')
         casedata = request.form.getlist('case')
         latlon = request.form.getlist('latlon')
-        if not casedata:
-            return redirect(url_for('map'))
+        if not casedata or not gender or not age:
+            return redirect(url_for('map', is_error=1))
         # 発生した事件の内容を変更
         db = DB()
-        sql = ('update occur set occur_case=%s'
+        sql = ('update occur set '
+               'occur_case=%s,occur_gender=%s,occur_age=%s'
                ' where occur_lat=%s and occur_lon=%s;')
-        data = (','.join(casedata), latlon[0], latlon[1],)
+        data = (','.join(casedata), gender[0], age[0],
+                latlon[0], latlon[1],)
         db.insert_update(sql, data)
         db.end_DB()
     return redirect(url_for('map'))
@@ -259,8 +275,8 @@ def add_occur_data():
 def ab_send_mail():
     mail = My_Mail(app)
     mail.ab_send_mail([['a', 'ac6328mats@g.kumamoto-nct.ac.jp']],
-                      'nowtime',
-                      'address')
+                      '2019/09/24/ 16:49:37',
+                      '熊本県宇土市萩原町23-7')
     return redirect(url_for('home'))
 
 # ブザーが押された時のメール
@@ -270,11 +286,6 @@ def bz_send_mail():
     mail.pbz_send_mail(['ac6328mats@g.kumamoto-nct.ac.jp'])
     mail.sbz_send_mail(['ac6292tsur@g.kumamoto-nct.ac.jp'])
     return redirect(url_for('home'))
-
-# wioからデータを送信したようにする仮のフォーム
-@app.route('/wio_form')
-def wio_form():
-    return render_template('wio_form.html')
 
 # wioからデータを取得していろいろする
 @app.route('/wio', methods=['GET', 'POST'])
@@ -418,6 +429,87 @@ def mistake():
     db.insert_update(sql, (occur_ID,))
     db.end_DB()
     return redirect(url_for('home'))
+
+# 便利ツール
+# wioからデータを送信したようにする仮のフォーム
+@app.route('/wio_form')
+def wio_form():
+    return render_template('wio_form.html')
+
+# db表示関連
+@app.route('/db_login')
+def db_login():
+    return render_template('db_login.html')
+
+@app.route('/show_db', methods=['GET','POST'])
+def show_db():
+    if request.method == 'GET':
+        return redirect(url_for('db_login'))
+    if request.method == 'POST':
+        name = request.form['id']
+        password = request.form['password']
+        if name == 'machimori' and password == 'admin':
+            db = DB()
+            sql = 'select * from occur;'
+            occurdata = db.select(sql)
+            sql = 'select * from safeguard;'
+            safedata = db.select(sql)
+            sql = 'select * from parent;'
+            parentdata = db.select(sql)
+            sql = 'select * from Hazardous_area;'
+            areadata = db.select(sql)
+            sql = 'select * from regular_data;'
+            regulardata = db.select(sql)
+            return render_template('db.html',
+                                   occurdata = occurdata,
+                                   safedata = safedata,
+                                   parentdata = parentdata,
+                                   areadata = areadata,
+                                   regulardata = regulardata)
+
+@app.route('/delete_columns', methods=['POST'])
+def delete_columns():
+    if request.method == 'POST':
+        btnname = request.form['btn']
+        clm_data = request.form.getlist(btnname)
+        print(clm_data)
+        db = DB()
+        if len(clm_data) == 11:
+            sql = ('delete from parent where'
+                   ' parent_ID=%s and buzzer_num=%s'
+                   ' and parent_lat=%s and parent_lon=%s'
+                   ' and parent_mail_address=%s and parent_password=%s'
+                   ' and school_lat=%s and school_lon=%s')
+            data = (clm_data[0], clm_data[1], clm_data[3], clm_data[4],
+                    clm_data[6], clm_data[7], clm_data[9], clm_data[10],)
+        if len(clm_data) == 9:
+            sql = ('delete from occur where'
+                   ' occur_ID=%s and parent_ID=%s and buzzer_num=%s'
+                   ' and occur_lat=%s and occur_lon=%s')
+            data = (clm_data[0], clm_data[1], clm_data[2],
+                    clm_data[3], clm_data[4],)
+        if len(clm_data) == 8:
+            sql = ('delete from safeguard where'
+                   ' safeguard_ID=%s'
+                   ' and safeguard_lat=%s and safeguard_lon=%s'
+                   ' and safeguard_mail_address=%s and safeguard_password=%s'
+                   ' and safeguard_img_path=%s')
+            data = (clm_data[0], clm_data[2], clm_data[3],
+                    clm_data[5], clm_data[6],)
+        if len(clm_data) == 7:
+            sql = ('delete from Hazardous_area where'
+                   ' occur_ID=%s and area_a_lat=%s and area_a_lon=%s'
+                   ' and area_b_lat=%s and area_b_lon=%s')
+            data = (clm_data[0], clm_data[1], clm_data[3], clm_data[4],)
+        if len(clm_data) == 4:
+            sql = ('delete from regular_data where'
+                   ' buzzer_num=%s and regular_lat=%s'
+                   ' and regular_lon=%s')
+            data = (clm_data[0], clm_data[1], clm_data[2],)
+        db.insert_update(sql, data)
+        db.end_DB()
+        
+    return redirect(url_for('show_db'))
 
 
 if __name__ == "__main__":
