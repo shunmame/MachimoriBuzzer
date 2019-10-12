@@ -5,7 +5,7 @@ import requests
 
 def iktoaddress(lat, lon):
     url = ('https://www.finds.jp/ws/rgeocode.php?'
-           'json&lat={0}+&lon={1}').format(lat, lon)
+           'json&lat={0}&lon={1}').format(lat, lon)
     response = requests.get(url)
     js = json.loads(response.text)
     try:
@@ -80,6 +80,21 @@ class My_Json():
                                                    50)
         coordinate_dict['latlon'] = latlon_dict
         return coordinate_dict
+
+    def abnormal_json(self, regular_latlon):
+        regular_latlon_list = []
+        regular_latlon_list.append({'lat' : 32.4765464,
+                                    'lon' : 130.6057858,
+                                    'buzzer_num' : '0'})
+        for latlon in regular_latlon:
+            regular_latlon_dict = {}
+            regular_latlon_dict["kind"] = 0
+            regular_latlon_dict["lat"] = latlon[1]
+            regular_latlon_dict["lon"] = latlon[2]
+            regular_latlon_dict["time"] = latlon[3].strftime('%Y/%m/%d %H:%M:%S')
+            regular_latlon_list.append(regular_latlon_dict)
+        print(regular_latlon_list)
+        return regular_latlon_list
 
 
 if __name__ == '__main__':

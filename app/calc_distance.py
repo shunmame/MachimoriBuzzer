@@ -28,6 +28,9 @@ class CalcDistance:
         dr = F/8*(c1-c2)
         rho = ra*(xx+dr)
         rho = rho * 1000
+        return rho
+
+    def choice_senduser(self, rho):
         result_list = []
         for dis, name, md in zip(rho, self.sname, self.smail_address):
             if dis > 500:

@@ -121,10 +121,14 @@ def registration_parent_data():
         last_name = request.form['last_name']
         mail_addres = request.form['mail_addres']
         password = request.form['password']
+        check_pass = request.form['check_pass']
         addres1 = request.form['addr11']
         addres2 = request.form['Address2']
         buzer_number = request.form['buzer_number']
         school_name = request.form['school_name']
+
+        if password != check_pass:
+            return redirect(url_for('registration_parent'))
 
         # 緯度経度から住所を出す
         lat, lon = atik.address_to_latlon(addres1+addres2)
@@ -171,8 +175,12 @@ def registration_safehouse_data():
         last_name = request.form['last_name']
         mail_addres = request.form['mail_address']
         password = request.form['password']
+        check_pass = request.form['check_pass']
         addres1 = request.form['addr11']
         addres2 = request.form['address']
+
+        if password != check_pass:
+            return redirect(url_for('registration_parent'))
 
         # safeguardの画像保存
         img_path = None
@@ -245,7 +253,44 @@ def map():
     except:
         return render_template('map_display.html',
                            data=data,
-                           name=inuserdata[0][3])
+                           name='ログイン中 : ' + inuserdata[0][3] + 'さん')
+
+@app.route('/ab_map', methods=['POST'])
+def ab_map():
+    if request.method == 'POST':
+        buzzer_num = request.form['buzzer_num']
+        nowtime = request.form['nowtime'].replace(' ','-')
+        # nowtime = datetime.strptime(nowtime, '%Y-%m-%d')
+    db = DB()
+    regular_latlon_sql = ("select * from regular_data "
+                          "where date_format(regular_time, \'%Y-%m-%d\')"
+                          "=date_format(\'{0}\',\'%Y-%m-%d\') and "
+                          "buzzer_num=\'{1}\'").format(nowtime, buzzer_num)
+    print(regular_latlon_sql)
+    regular_latlon = db.select(regular_latlon_sql)
+    create_json = cj.My_Json()
+    abjson = create_json.abnormal_json(regular_latlon)
+    db.end_DB()
+    return render_template('map_display.html',
+                           data = abjson,
+                           name = '異常検知')
+
+@app.route('/occurmap', methods=['POST'])
+def occurmap():
+    if request.method == 'POST':
+        lat = request.form['lat']
+        lon = request.form['lon']
+        nowtime = request.form['nowtime']
+    occur_plot = [{'lat' : float(lat),
+                  'lon' : float(lon),
+                  'buzzer_num' : '0'},
+                  {'kind' : 0,
+                  'lat' : float(lat),
+                  'lon' : float(lon),
+                  'time' : nowtime}]
+    return render_template('map_display.html',
+                           data = occur_plot,
+                           name = '発生地点')
 
 
 # 発生事件の編集
@@ -270,7 +315,7 @@ def add_occur_data():
         db.end_DB()
     return redirect(url_for('map'))
 
-# 異常検知のメール
+# 異常検知のメール(使用していない)
 @app.route('/abnormal_mail')
 def ab_send_mail():
     mail = My_Mail(app)
@@ -279,7 +324,7 @@ def ab_send_mail():
                       '熊本県宇土市萩原町23-7')
     return redirect(url_for('home'))
 
-# ブザーが押された時のメール
+# ブザーが押された時のメール(使用していない)
 @app.route('/buzzer_mail')
 def bz_send_mail():
     mail = My_Mail(app)
@@ -304,8 +349,13 @@ def get_wio_data():
         parent_ID = request.form['parent_ID']
         buzzer_num = request.form['buzzer_num']
 
+    wio_lat = 31.7323901
+    wio_lon = 131.0738172
+
     # latlonを住所変換
     occur_address = cj.iktoaddress(wio_lat, wio_lon)
+    if occur_address is None:
+        pass
     # 現在時刻の取得
     jtz = pytz.timezone('Asia/Tokyo')
     nowtime = datetime.now(jtz).strftime('%Y-%m-%d %H-%M-%S')
@@ -348,13 +398,30 @@ def get_wio_data():
                        ' where occur_ID=%s')
                 data = (json.dumps(acon_dict), ac[0],)
                 db.insert_update(sql, data)
+        
+        # 家または学校の情報をとる
+        school_house_sql = ('select parent_lat,parent_lon,'
+                            'school_lat,school_lon from parent'
+                            ' where parent_ID=%s')
+        school_house_data = db.select(school_house_sql, (parent_ID,))
+        # 学校から現在地の距離を計算
+        cd = CalcDistance([[school_house_data[0][0],school_house_data[0][1],'name','address']])
+        school_dis = cd.cal_rho(wio_lat, wio_lon)
+        # 家から現在地の距離を計算
+        cd = CalcDistance([[school_house_data[0][2],school_house_data[0][3],'name','address']])
+        home_dis = cd.cal_rho(wio_lat, wio_lon)
+        if float(school_dis[0]) >= 100 or float(home_dis[0]) >= 50:
+            if area_flag == 1:
+                area_flag = 4
+            else :
+                area_flag = 3
 
         # 異常検知
         knn = KNN2d(buzzer_num)
         result = knn.main(wio_lat, wio_lon)
         if result:
             # メール送信
-            mail.ab_send_mail(pdata, nowtime, occur_address)
+            mail.ab_send_mail(pdata, nowtime, occur_address, buzzer_num)
 
         # 異常検知用のDBに入れる
         sql = "insert into regular_data value (%s,%s,%s,%s)"
@@ -380,7 +447,8 @@ def get_wio_data():
         # 保護者にメール送信
         mail.pbz_send_mail(pdata, nowtime,
                            occur_address, occur_ID,
-                           parent_ID, buzzer_num)
+                           parent_ID, buzzer_num,
+                           wio_lat, wio_lon)
         # safeguardの情報取得
         sql = ('select'
                ' safeguard_lat,safeguard_lon,'
@@ -389,7 +457,7 @@ def get_wio_data():
         sdata = db.select(sql)
         cd = CalcDistance(sdata)
         # 発生地点から500m以内にある家のリストを取得し、送信
-        s_namail_list = cd.cal_rho(wio_lat, wio_lon)
+        s_namail_list = cd.choice_senduser(cd.cal_rho(wio_lat, wio_lon))
         if s_namail_list:
             mail.sbz_send_mail(s_namail_list, nowtime, occur_address)
         # 対角の座標取得(発生地点を中心)
@@ -401,7 +469,10 @@ def get_wio_data():
         create_json = cj.My_Json()
         coo_dict = create_json.concentration_json(edge_ab)
         # JsonをHazardous_areaに保存
-        sql = "insert into Hazardous_area value (%s,%s,%s,%s,%s,%s)"
+        sql = ('insert into Hazardous_area'
+               '(occur_ID,area_a_lat,area_a_lon,'
+               'area_b_lat,area_b_lon,area_concentration)'
+               'value (%s,%s,%s,%s,%s,%s)')
         data = (occur_ID, coo_dict['a'][0],
                 coo_dict['a'][1],
                 coo_dict['b'][0],
@@ -413,11 +484,12 @@ def get_wio_data():
     return '0'
 
 # ブザーの誤操作用
-@app.route('/mistake')
+@app.route('/mistake', methods=['POST'])
 def mistake():
-    occur_ID = request.args.get('occur_ID')
-    parent_ID = request.args.get('parent_ID')
-    buzzer_num = request.args.get('buzzer_num')
+    if request.method == 'POST':
+        occur_ID = request.form['occur_ID']
+        parent_ID = request.form['parent_ID']
+        buzzer_num = request.form['buzzer_num']
     # occurのmiss_flagを1にする
     db = DB()
     sql = ('update occur set miss_flag=1'
@@ -429,6 +501,87 @@ def mistake():
     db.insert_update(sql, (occur_ID,))
     db.end_DB()
     return redirect(url_for('home'))
+
+# 便利ツール
+# wioからデータを送信したようにする仮のフォーム
+@app.route('/wio_form')
+def wio_form():
+    return render_template('wio_form.html')
+
+# db表示関連
+@app.route('/db_login')
+def db_login():
+    return render_template('db_login.html')
+
+@app.route('/show_db', methods=['GET','POST'])
+def show_db():
+    if request.method == 'GET':
+        return redirect(url_for('db_login'))
+    if request.method == 'POST':
+        name = request.form['id']
+        password = request.form['password']
+        if name == 'machimori' and password == 'admin':
+            db = DB()
+            sql = 'select * from occur;'
+            occurdata = db.select(sql)
+            sql = 'select * from safeguard;'
+            safedata = db.select(sql)
+            sql = 'select * from parent;'
+            parentdata = db.select(sql)
+            sql = 'select * from Hazardous_area;'
+            areadata = db.select(sql)
+            sql = 'select * from regular_data;'
+            regulardata = db.select(sql)
+            return render_template('db.html',
+                                   occurdata = occurdata,
+                                   safedata = safedata,
+                                   parentdata = parentdata,
+                                   areadata = areadata,
+                                   regulardata = regulardata)
+
+@app.route('/delete_columns', methods=['POST'])
+def delete_columns():
+    if request.method == 'POST':
+        btnname = request.form['btn']
+        clm_data = request.form.getlist(btnname)
+        print(clm_data)
+        db = DB()
+        if len(clm_data) == 11:
+            sql = ('delete from parent where'
+                   ' parent_ID=%s and buzzer_num=%s'
+                   ' and parent_lat=%s and parent_lon=%s'
+                   ' and parent_mail_address=%s and parent_password=%s'
+                   ' and school_lat=%s and school_lon=%s')
+            data = (clm_data[0], clm_data[1], clm_data[3], clm_data[4],
+                    clm_data[6], clm_data[7], clm_data[9], clm_data[10],)
+        if len(clm_data) == 9:
+            sql = ('delete from occur where'
+                   ' occur_ID=%s and parent_ID=%s and buzzer_num=%s'
+                   ' and occur_lat=%s and occur_lon=%s')
+            data = (clm_data[0], clm_data[1], clm_data[2],
+                    clm_data[3], clm_data[4],)
+        if len(clm_data) == 8:
+            sql = ('delete from safeguard where'
+                   ' safeguard_ID=%s'
+                   ' and safeguard_lat=%s and safeguard_lon=%s'
+                   ' and safeguard_mail_address=%s and safeguard_password=%s'
+                   ' and safeguard_img_path=%s')
+            data = (clm_data[0], clm_data[2], clm_data[3],
+                    clm_data[5], clm_data[6],)
+        if len(clm_data) == 7:
+            sql = ('delete from Hazardous_area where'
+                   ' occur_ID=%s and area_a_lat=%s and area_a_lon=%s'
+                   ' and area_b_lat=%s and area_b_lon=%s')
+            data = (clm_data[0], clm_data[1], clm_data[3], clm_data[4],)
+        if len(clm_data) == 4:
+            sql = ('delete from regular_data where'
+                   ' buzzer_num=%s and regular_lat=%s'
+                   ' and regular_lon=%s')
+            data = (clm_data[0], clm_data[1], clm_data[2],)
+        db.insert_update(sql, data)
+        db.end_DB()
+        
+    return redirect(url_for('show_db'))
 
 
 if __name__ == "__main__":

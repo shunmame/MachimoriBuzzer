@@ -4,6 +4,7 @@ from DB import DB
 # x : lon
 # y : lat
 
+# k : 円内の個数
 
 class KNN2d:
     def __init__(self, buzzer_num):
@@ -19,8 +20,9 @@ class KNN2d:
 
     # wioのデータを受け取り異常検知
     def main(self, lat, lon):
-        if self.lon_list != []:
-            result = self.__abnormal_decision(self.__knn2d(lon, lat, 5),
+        k = 5
+        if self.lon_list != [] and len(self.lon_list) > k:
+            result = self.__abnormal_decision(self.__knn2d(lon, lat, k),
                                               0.0008)
             if result == 1:
                 return 1

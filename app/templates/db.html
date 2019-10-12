@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <style>
+        table {
+            margin-bottom: 2%;
+        }
+    </style>
+</head>
+
+<body>
+    <form>
+        <table border="1" style="border-collapse: collapse">
+            <tr>
+                <td>parent_ID</td>
+                <td>buzzer_num</td>
+                <td>parent_address</td>
+                <td>parent_lat</td>
+                <td>parent_lon</td>
+                <td>parent_name</td>
+                <td>parent_mail_address</td>
+                <td>parent_password</td>
+                <td>school_name</td>
+                <td>school_lat</td>
+                <td>school_lon</td>
+            </tr>
+            {% for pd in parentdata %}
+            <tr>
+                <td>
+                    <div><input type="hidden" name="pd{{ loop.index0 }}" value={{ pd[0] }}>{{ pd[0] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="pd{{ loop.index0 }}" value={{ pd[1] }}>{{ pd[1] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="pd{{ loop.index0 }}" value={{ pd[2] }}>{{ pd[2] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="pd{{ loop.index0 }}" value={{ pd[3] }}>{{ pd[3] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="pd{{ loop.index0 }}" value={{ pd[4] }}>{{ pd[4] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="pd{{ loop.index0 }}" value={{ pd[5] }}>{{ pd[5] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="pd{{ loop.index0 }}" value={{ pd[6] }}>{{ pd[6] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="pd{{ loop.index0 }}" value={{ pd[7] }}>{{ pd[7] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="pd{{ loop.index0 }}" value={{ pd[8] }}>{{ pd[8] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="pd{{ loop.index0 }}" value={{ pd[9] }}>{{ pd[9] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="pd{{ loop.index0 }}" value={{ pd[10] }}>{{ pd[10] }}</div>
+                </td>
+                <td><button type="submit" formmethod="post" formaction="/delete_columns" value=pd{{ loop.index0 }} name="btn">削除</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
+    <form>
+        <table border="1" style="border-collapse: collapse">
+            <tr>
+                <td>safeguard_ID</td>
+                <td>safeguard_address</td>
+                <td>safeguard_lat</td>
+                <td>safeguard_lon</td>
+                <td>safeguard_name</td>
+                <td>safeguard_mail_address</td>
+                <td>safeguard_password</td>
+                <td>safeguard_img_path</td>
+            </tr>
+            {% for sd in safedata %}
+            <tr>
+                <td>
+                    <div><input type="hidden" name="sd{{ loop.index0 }}" value={{ sd[0] }}>{{ sd[0] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="sd{{ loop.index0 }}" value={{ sd[1] }}>{{ sd[1] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="sd{{ loop.index0 }}" value={{ sd[2] }}>{{ sd[2] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="sd{{ loop.index0 }}" value={{ sd[3] }}>{{ sd[3] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="sd{{ loop.index0 }}" value={{ sd[4] }}>{{ sd[4] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="sd{{ loop.index0 }}" value={{ sd[5] }}>{{ sd[5] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="sd{{ loop.index0 }}" value={{ sd[6] }}>{{ sd[6] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="sd{{ loop.index0 }}" value={{ sd[7] }}>{{ sd[7] }}</div>
+                </td>
+                <td><button type="submit" formmethod="post" formaction="/delete_columns" value=sd{{ loop.index0 }} name="btn">削除</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
+    <form>
+        <table border="1" style="border-collapse: collapse">
+            <tr>
+                <td>occur_ID</td>
+                <td>parent_ID</td>
+                <td>buzzer_num</td>
+                <td>occur_lat</td>
+                <td>occur_lon</td>
+                <td>occur_time</td>
+                <td>occur_address</td>
+                <td>miss_flag</td>
+                <td>occur_case</td>
+            </tr>
+            {% for od in occurdata %}
+            <tr>
+                <td>
+                    <div><input type="hidden" name="od{{ loop.index0 }}" value={{ od[0] }}>{{ od[0] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="od{{ loop.index0 }}" value={{ od[1] }}>{{ od[1] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="od{{ loop.index0 }}" value={{ od[2] }}>{{ od[2] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="od{{ loop.index0 }}" value={{ od[3] }}>{{ od[3] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="od{{ loop.index0 }}" value={{ od[4] }}>{{ od[4] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="od{{ loop.index0 }}" value={{ od[5] }}>{{ od[5] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="od{{ loop.index0 }}" value={{ od[6] }}>{{ od[6] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="od{{ loop.index0 }}" value={{ od[7] }}>{{ od[7] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="od{{ loop.index0 }}" value={{ od[8] }}>{{ od[8] }}</div>
+                </td>
+                <td><button type="submit" formmethod="post" formaction="/delete_columns" value=od{{ loop.index0 }} name="btn">削除</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
+    <form>
+        <table border="1" style="border-collapse: collapse">
+            <tr>
+                <td>occur_ID</td>
+                <td>area_a_lat</td>
+                <td>area_a_lon</td>
+                <td>area_b_lat</td>
+                <td>area_b_lon</td>
+                <td>area_cncentration</td>
+                <td>miss_flag</td>
+            </tr>
+            {% for ad in areadata %}
+            <tr>
+                <td>
+                    <div><input type="hidden" name="ad{{ loop.index0 }}" value={{ ad[0] }}>{{ ad[0] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="ad{{ loop.index0 }}" value={{ ad[1] }}>{{ ad[1] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="ad{{ loop.index0 }}" value={{ ad[2] }}>{{ ad[2] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="ad{{ loop.index0 }}" value={{ ad[3] }}>{{ ad[3] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="ad{{ loop.index0 }}" value={{ ad[4] }}>{{ ad[4] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="ad{{ loop.index0 }}" value={{ ad[5] }}>{{ ad[5] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="ad{{ loop.index0 }}" value={{ ad[6] }}>{{ ad[6] }}</div>
+                </td>
+                <td><button type="submit" formmethod="post" formaction="/delete_columns" value=ad{{ loop.index0 }} name="btn">削除</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
+    <form>
+        <table border="1" style="border-collapse: collapse">
+            <tr>
+                <td>buzzer_num</td>
+                <td>regular_lat</td>
+                <td>regular_lon</td>
+                <td>regular_time</td>
+            </tr>
+            {% for rd in regulardata %}
+            <tr>
+                <td>
+                    <div><input type="hidden" name="rd{{ loop.index0 }}" value={{ rd[0] }}>{{ rd[0] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="rd{{ loop.index0 }}" value={{ rd[1] }}>{{ rd[1] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="rd{{ loop.index0 }}" value={{ rd[2] }}>{{ rd[2] }}</div>
+                </td>
+                <td>
+                    <div><input type="hidden" name="rd{{ loop.index0 }}" value={{ rd[3] }}>{{ rd[3] }}</div>
+                </td>
+                <td><button type="submit" formmethod="post" formaction="/delete_columns" value=rd{{ loop.index0 }} name="btn">削除</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
+</body>
+
+</html>

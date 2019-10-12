@@ -1,10 +1,14 @@
 from flask_mail import Mail, Message
+from datetime import datetime
 
 class My_Mail:
     def __init__(self, app):
         self.mail = Mail(app)
 
-    def ab_send_mail(self, senddata, nowtime, address):
+    def __chenge_str_to_datetime(self, strtime):
+        return datetime.strptime(strtime, '%Y-%m-%d %H-%M-%S').strftime('%Y年%m月%d日 %H時%M分%S秒')
+
+    def ab_send_mail(self, senddata, nowtime, address, buzzer_num):
         msg = Message("[まちもりブザー]異常を検知しました",  #title
                       sender="sysken.machimori@gmail.com",  # 送信元
                       recipients=[senddata[0][1]],  # 送信先
@@ -24,15 +28,21 @@ class My_Mail:
         <p>時間 : {0}</p>
         <p>住所 : {1}</p>
         <br>
+        <form action="machimori.japanwest.cloudapp.azure.com/ab_map" method="POST">
+        <input type="text" name="buzzer_num" value={2} style="display:none;">
+        <input type="text" name="nowtime" value={3} style="display:none;">
+        <button type="submit" class="btn-flat-vertical-border">異常を検知した場所を見る</button>
+        </form>
+        <br>
         <p>以下のサイトで、街の危険エリアやこどもをまもるいえを示した「まちもりマップ」がご確認できます。</p>
         <p>machimori.japanwest.cloudapp.azure.com</p>
         </body>
         </html>
-        """.format(nowtime, address)
+        """.format(self.__chenge_str_to_datetime(nowtime), address, buzzer_num, nowtime)
         self.mail.send(msg)  # メール送信
 
     # parent buzzer
-    def pbz_send_mail(self, senddata, nowtime, address, occur_ID, parent_ID, buzzer_num):
+    def pbz_send_mail(self, senddata, nowtime, address, occur_ID, parent_ID, buzzer_num, wio_lat, wio_lon):
         msg = Message("[まちもりブザー]ブザーが鳴らされました",
                       sender="sysken.machimori@gmail.com",
                       bcc=[senddata[0][1]],
@@ -50,15 +60,38 @@ class My_Mail:
         <p>こんにちは、{0}さま。まちもりブザーのからのお知らせです。</p>
         <p>{0}さまのまちもりブザーが鳴らされました。<br>お子様に何らかの危険が迫っている可能性があります。</p>
         <p>発生時刻：{1}<br>発生地点：{2}</p>
-        <br> 
+        <br>
+        <form action="machimori.japanwest.cloudapp.azure.com/occurmap" method="POST">
+        <input type="text" name="lat" value={6} style="display:none;">
+        <input type="text" name="lon" value={7} style="display:none;">
+        <input type="text" name="nowtime" value={1} style="display:none;">
+        <button type="submit" class="btn-flat-vertical-border">発生地点を見る</button>
+        </form>
         <p>もし誤操作だった場合は、こちらのサイトにアクセスしていただき、お取消しいただきますようお願いします。</p>
-        <p>machimori.japanwest.cloudapp.azure.com/mistake?occur_ID={3}&parent_ID={4}&buzzer_num={5}</p>
+        <form action="machimori.japanwest.cloudapp.azure.com/mistake" method="POST">
+        <input type="text" name="occur_ID" value={3} style="display:none;">
+        <input type="text" name="parent_ID" value={4} style="display:none;">
+        <input type="text" name="buzzer_num" value={5} style="display:none;">
+        <button type="submit" class="btn-flat-vertical-border" 
+        style="background-image:-moz-linear-gradient(top,
+                #49a9d4 0%,
+                #49a9d4 49%,
+                #419cd8 50%,
+                #419cd8);
+                background-image:-webkit-gradient(
+                linear,left top,left bottom,
+                from(#49a9d4),
+                color-stop(0.49,#49a9d4),
+                color-stop(0.50,#419cde8),
+                to(#419cd8));
+            ">取消</button>
+        </form>
         <br>
         <p>以下のサイトで、街の危険エリアやこどもをまもるいえを示した「まちもりマップ」がご確認できます。</p>
         <p>machimori.japanwest.cloudapp.azure.com</p>
         </body>
         </html>
-        """.format(senddata[0][0], nowtime, address, occur_ID, parent_ID, buzzer_num)
+        """.format(senddata[0][0], self.__chenge_str_to_datetime(nowtime), address, occur_ID, parent_ID, buzzer_num, wio_lat, wio_lon)
         self.mail.send(msg)
 
     # safeguard buzzer
@@ -87,7 +120,7 @@ class My_Mail:
             <p>machimori.japanwest.cloudapp.azure.com</p>
             </body>
             </html>
-            """.format(sd['name'], nowtime, address)
+            """.format(sd['name'], self.__chenge_str_to_datetime(nowtime), address)
             self.mail.send(msg)
 
     def wio_get_mail(self, mail_addresses, flag_text, lat, lon):
