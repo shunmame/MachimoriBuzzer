@@ -95,7 +95,7 @@ class My_Mail:
         self.mail.send(msg)
 
     # safeguard buzzer
-    def sbz_send_mail(self, sdata, nowtime, address):
+    def sbz_send_mail(self, sdata, nowtime, address, wio_lat, wio_lon):
         for sd in sdata:
             msg = Message("[まちもりブザー]ブザーが鳴らされました",
                           sender="sysken.machimori@gmail.com",
@@ -116,11 +116,18 @@ class My_Mail:
             <p>もし、子どもが被害にあっている様子を確認された場合には、警察などへの連絡や子どもの保護をお願いします。</p>
             <p>発生時刻：{1}<br>発生地点：{2}</p>
             <br>
+            <form action="machimori.japanwest.cloudapp.azure.com/occurmap" method="POST">
+            <input type="text" name="lat" value={3} style="display:none;">
+            <input type="text" name="lon" value={4} style="display:none;">
+            <input type="text" name="nowtime" value={1} style="display:none;">
+            <button type="submit" class="btn-flat-vertical-border">発生地点を見る</button>
+            </form>
+            <br>
             <p>以下のサイトで、街の危険エリアやこどもをまもるいえを示した「まちもりマップ」がご確認できます。</p>
             <p>machimori.japanwest.cloudapp.azure.com</p>
             </body>
             </html>
-            """.format(sd['name'], self.__chenge_str_to_datetime(nowtime), address)
+            """.format(sd['name'], self.__chenge_str_to_datetime(nowtime), address, wio_lat, wio_lon)
             self.mail.send(msg)
 
     def wio_get_mail(self, mail_addresses, flag_text, lat, lon):

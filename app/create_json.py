@@ -93,7 +93,6 @@ class My_Json():
             regular_latlon_dict["lon"] = latlon[2]
             regular_latlon_dict["time"] = latlon[3].strftime('%Y/%m/%d %H:%M:%S')
             regular_latlon_list.append(regular_latlon_dict)
-        print(regular_latlon_list)
         return regular_latlon_list
 
 

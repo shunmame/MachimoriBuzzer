@@ -138,7 +138,6 @@ def registration_parent_data():
         if school_latlon is None:
             school_lat = lat
             school_lon = lon
-        print(school_latlon)
         school_lat = school_latlon.latlng[0]
         school_lon = school_latlon.latlng[1]
 
@@ -266,7 +265,6 @@ def ab_map():
                           "where date_format(regular_time, \'%Y-%m-%d\')"
                           "=date_format(\'{0}\',\'%Y-%m-%d\') and "
                           "buzzer_num=\'{1}\'").format(nowtime, buzzer_num)
-    print(regular_latlon_sql)
     regular_latlon = db.select(regular_latlon_sql)
     create_json = cj.My_Json()
     abjson = create_json.abnormal_json(regular_latlon)
@@ -349,13 +347,15 @@ def get_wio_data():
         parent_ID = request.form['parent_ID']
         buzzer_num = request.form['buzzer_num']
 
-    wio_lat = 31.7323901
-    wio_lon = 131.0738172
+    if wio_lat == 0:
+        wio_lat = 31.7323901
+    if wio_lon == 0:
+        wio_lon = 131.0738172
 
     # latlonを住所変換
     occur_address = cj.iktoaddress(wio_lat, wio_lon)
     if occur_address is None:
-        pass
+        occur_address = '宮崎県都城市北原町1106-100'
     # 現在時刻の取得
     jtz = pytz.timezone('Asia/Tokyo')
     nowtime = datetime.now(jtz).strftime('%Y-%m-%d %H-%M-%S')
@@ -432,18 +432,20 @@ def get_wio_data():
 
     # ボタンが押された用
     elif flag:
+        sql = 'select * from occur'
+        lendata = len(db.select(sql))
         # 事件をoccurに保存
         sql = ('insert into occur(occur_ID,parent_ID,buzzer_num,occur_lat,'
                'occur_lon,occur_time,occur_address)'
                ' value (%s,%s,%s,%s,%s,%s,%s)')
-        data = (0, parent_ID, buzzer_num,
+        data = (lendata+1, parent_ID, buzzer_num,
                 wio_lat, wio_lon, nowtime, occur_address,)
         db.insert_update(sql, data)
         # 保存した事件のoccur_IDを取得
         sql = ('select occur_ID from occur'
                ' where parent_ID=%s and occur_lat=%s and occur_lon=%s')
         data = (parent_ID, wio_lat, wio_lon,)
-        occur_ID = db.select(sql, data)[0][0]
+        occur_ID = db.select(sql, data)[-1][0]
         # 保護者にメール送信
         mail.pbz_send_mail(pdata, nowtime,
                            occur_address, occur_ID,
@@ -459,7 +461,7 @@ def get_wio_data():
         # 発生地点から500m以内にある家のリストを取得し、送信
         s_namail_list = cd.choice_senduser(cd.cal_rho(wio_lat, wio_lon))
         if s_namail_list:
-            mail.sbz_send_mail(s_namail_list, nowtime, occur_address)
+            mail.sbz_send_mail(s_namail_list, nowtime, occur_address, wio_lat, wio_lon)
         # 対角の座標取得(発生地点を中心)
         edge_ab = great_circle(distance=100*math.sqrt(2),
                                azimuth=[135, -45],
@@ -544,7 +546,6 @@ def delete_columns():
     if request.method == 'POST':
         btnname = request.form['btn']
         clm_data = request.form.getlist(btnname)
-        print(clm_data)
         db = DB()
         if len(clm_data) == 11:
             sql = ('delete from parent where'
