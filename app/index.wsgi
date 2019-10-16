@@ -1,20 +1,20 @@
 # coding: utf-8
 
 import sys
-sys.path.insert(0, '/var/www/app')
+sys.path.insert(0, '****')
 
 import os
-# os.environ['DB_USER'] = 'machimori'
-os.environ['DB_USER'] = 'root'
-os.environ['DB_PASS'] = 'yatsushironct'
-# os.environ['DB_HOST'] = '127.0.0.1'
-os.environ['DB_HOST'] = 'localhost'
-# os.environ['DB_DB'] = 'machimori'
-os.environ['DB_DB'] = 'machimori_honban'
-os.environ['DB_PORT'] = '3306'
+# os.environ['DB_USER'] = '****'
+os.environ['DB_USER'] = '****'
+os.environ['DB_PASS'] = '****'
+# os.environ['DB_HOST'] = '****'
+os.environ['DB_HOST'] = '****'
+# os.environ['DB_DB'] = '****'
+os.environ['DB_DB'] = '****'
+os.environ['DB_PORT'] = '****'
 
-os.environ['UPLOAD_FOLDER'] = '/var/www/app/static/map_display/img/safeguard/'
-os.environ['SECRET_KEY'] = 'machimori'
+os.environ['UPLOAD_FOLDER'] = '****'
+os.environ['SECRET_KEY'] = '****'
 
 #from flask_test import app as application
 from app import app as application
