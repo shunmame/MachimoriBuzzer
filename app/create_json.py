@@ -83,8 +83,8 @@ class My_Json():
 
     def abnormal_json(self, regular_latlon):
         regular_latlon_list = []
-        regular_latlon_list.append({'lat' : 32.4765464,
-                                    'lon' : 130.6057858,
+        regular_latlon_list.append({'lat' : 32,
+                                    'lon' : 130,
                                     'buzzer_num' : '0'})
         for latlon in regular_latlon:
             regular_latlon_dict = {}
