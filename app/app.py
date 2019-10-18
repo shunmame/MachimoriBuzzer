@@ -259,7 +259,6 @@ def ab_map():
     if request.method == 'POST':
         buzzer_num = request.form['buzzer_num']
         nowtime = request.form['nowtime'].replace(' ','-')
-        # nowtime = datetime.strptime(nowtime, '%Y-%m-%d')
     db = DB()
     regular_latlon_sql = ("select * from regular_data "
                           "where date_format(regular_time, \'%Y-%m-%d\')"
@@ -317,17 +316,17 @@ def add_occur_data():
 @app.route('/abnormal_mail')
 def ab_send_mail():
     mail = My_Mail(app)
-    mail.ab_send_mail([['a', 'ac6328mats@g.kumamoto-nct.ac.jp']],
+    mail.ab_send_mail([['a', 'mail_address']],
                       '2019/09/24/ 16:49:37',
-                      '熊本県宇土市萩原町23-7')
+                      'address')
     return redirect(url_for('home'))
 
 # ブザーが押された時のメール(使用していない)
 @app.route('/buzzer_mail')
 def bz_send_mail():
     mail = My_Mail(app)
-    mail.pbz_send_mail(['ac6328mats@g.kumamoto-nct.ac.jp'])
-    mail.sbz_send_mail(['ac6292tsur@g.kumamoto-nct.ac.jp'])
+    mail.pbz_send_mail(['mail_address'])
+    mail.sbz_send_mail(['mail_address'])
     return redirect(url_for('home'))
 
 # wioからデータを取得していろいろする
@@ -348,14 +347,14 @@ def get_wio_data():
         buzzer_num = request.form['buzzer_num']
 
     if wio_lat == 0:
-        wio_lat = 31.7323901
+        wio_lat = 31
     if wio_lon == 0:
-        wio_lon = 131.0738172
+        wio_lon = 131
 
     # latlonを住所変換
     occur_address = cj.iktoaddress(wio_lat, wio_lon)
     if occur_address is None:
-        occur_address = '宮崎県都城市北原町1106-100'
+        occur_address = 'address'
     # 現在時刻の取得
     jtz = pytz.timezone('Asia/Tokyo')
     nowtime = datetime.now(jtz).strftime('%Y-%m-%d %H-%M-%S')
