@@ -10,7 +10,7 @@ class My_Mail:
 
     def ab_send_mail(self, senddata, nowtime, address, buzzer_num):
         msg = Message("[まちもりブザー]異常を検知しました",  #title
-                      sender="sysken.machimori@gmail.com",  # 送信元
+                      sender="****",  # 送信元
                       recipients=[senddata[0][1]],  # 送信先
                       charset="shift_jis")  # 日本語表示するため
         msg.html = """
@@ -23,8 +23,8 @@ class My_Mail:
             <h2>まちもりブザーからのお知らせ</h2>
         </div>
         </header>
-        <p>こんにちは、松永さま。まちもりブザーのからのお知らせです。</p>
-        <p>松永さまのまちもりブザーで異常を検知しました。<br>お子様が普段の通学路から外れた場所を歩いている可能性がありますのでご注意ください。</p>
+        <p>こんにちは、****さま。まちもりブザーのからのお知らせです。</p>
+        <p>****さまのまちもりブザーで異常を検知しました。<br>お子様が普段の通学路から外れた場所を歩いている可能性がありますのでご注意ください。</p>
         <p>時間 : {0}</p>
         <p>住所 : {1}</p>
         <br>
@@ -44,7 +44,7 @@ class My_Mail:
     # parent buzzer
     def pbz_send_mail(self, senddata, nowtime, address, occur_ID, parent_ID, buzzer_num, wio_lat, wio_lon):
         msg = Message("[まちもりブザー]ブザーが鳴らされました",
-                      sender="sysken.machimori@gmail.com",
+                      sender="****",
                       bcc=[senddata[0][1]],
                       charset="shift_jis")
         msg.html = """
@@ -98,7 +98,7 @@ class My_Mail:
     def sbz_send_mail(self, sdata, nowtime, address, wio_lat, wio_lon):
         for sd in sdata:
             msg = Message("[まちもりブザー]ブザーが鳴らされました",
-                          sender="sysken.machimori@gmail.com",
+                          sender="****",
                           bcc=[sd['mail_address']],
                           charset="shift_jis")
             msg.html = """
@@ -140,7 +140,7 @@ class My_Mail:
 
     def p_registration_mail(self, mail_addresses, parent_name, parent_ID):
         msg = Message("[まちもりブザー]ブザー新規登録",
-                      sender="sysken.machimori@gmail.com",
+                      sender="****",
                       recipients=mail_addresses,
                       charset="shift_jis")
         msg.html = """
@@ -150,7 +150,7 @@ class My_Mail:
 
     def s_registration_mail(self, mail_addresses, parent_name, parent_ID):
         msg = Message("[まちもりブザー]こどもをまもるいえ新規登録",
-                      sender="sysken.machimori@gmail.com",
+                      sender="****",
                       recipients=mail_addresses,
                       charset="shift_jis")
         msg.html = """
