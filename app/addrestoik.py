@@ -16,6 +16,6 @@ def address_to_latlon(address):
 
 
 if __name__ == "__main__":
-    address = "熊本県八代市平山新町2627"
+    address = "********"
     lat, lon = address_to_latlon(address)
     print(lat, lon)
