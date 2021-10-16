@@ -1,7 +1,5 @@
 # MachimoriBuzzer
-
-### Webサイト(↓Look here!↓)
-http://machimori.japanwest.cloudapp.azure.com
+高専プロコンの作品
 
 ### 概要  
 まちもりブザーのソースコード
